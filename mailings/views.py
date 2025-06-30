@@ -1,12 +1,5 @@
 """
 Представления для приложения рассылок.
-
-Это самая важная часть нашего приложения - здесь реализована вся
-бизнес-логика работы с рассылками, сообщениями и клиентами.
-
-Мы используем generic views (универсальные представления) Django,
-которые автоматически обрабатывают стандартные операции CRUD.
-Это экономит много времени и обеспечивает консистентность кода.
 """
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -25,6 +18,10 @@ from django.core.cache import cache
 
 from .models import Mailing, Message, Client, MailingAttempt
 from .forms import MailingForm, MessageForm, ClientForm
+from .decorators import (
+    OwnerRequiredMixin, OwnerOrManagerRequiredMixin,
+    user_can_edit_object, user_can_view_object
+)
 
 
 class HomeView(TemplateView):

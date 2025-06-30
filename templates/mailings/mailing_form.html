@@ -1,0 +1,364 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    {% if object %}Редактирование рассылки{% else %}Создание рассылки{% endif %} - Сервис рассылок
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="container mt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'mailings:mailing_list' %}">Рассылки</a></li>
+            <li class="breadcrumb-item active">
+                {% if object %}Редактирование{% else %}Создание{% endif %}
+            </li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    {% if object %}
+                        <i class="fas fa-edit me-2"></i>
+                        Редактирование рассылки "{{ object.name }}"
+                    {% else %}
+                        <i class="fas fa-plus me-2"></i>
+                        Создание новой рассылки
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Название рассылки -->
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">
+                            <i class="fas fa-tag me-1"></i>
+                            {{ form.name.label }}
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                        {% endif %}
+                        {% if form.name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.name.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Временные параметры -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="{{ form.first_send_datetime.id_for_label }}" class="form-label">
+                                    <i class="fas fa-play me-1"></i>
+                                    {{ form.first_send_datetime.label }}
+                                </label>
+                                {{ form.first_send_datetime }}
+                                {% if form.first_send_datetime.help_text %}
+                                    <div class="form-text">{{ form.first_send_datetime.help_text }}</div>
+                                {% endif %}
+                                {% if form.first_send_datetime.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.first_send_datetime.errors %}
+                                            <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="{{ form.end_datetime.id_for_label }}" class="form-label">
+                                    <i class="fas fa-stop me-1"></i>
+                                    {{ form.end_datetime.label }}
+                                </label>
+                                {{ form.end_datetime }}
+                                {% if form.end_datetime.help_text %}
+                                    <div class="form-text">{{ form.end_datetime.help_text }}</div>
+                                {% endif %}
+                                {% if form.end_datetime.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.end_datetime.errors %}
+                                            <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Статус рассылки -->
+                    <div class="mb-4">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">
+                            <i class="fas fa-flag me-1"></i>
+                            {{ form.status.label }}
+                        </label>
+                        {{ form.status }}
+                        {% if form.status.help_text %}
+                            <div class="form-text">{{ form.status.help_text }}</div>
+                        {% endif %}
+                        {% if form.status.errors %}
+                            <div class="text-danger">
+                                {% for error in form.status.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Выбор сообщения -->
+                    <div class="mb-4">
+                        <label for="{{ form.message.id_for_label }}" class="form-label">
+                            <i class="fas fa-envelope me-1"></i>
+                            {{ form.message.label }}
+                        </label>
+                        {{ form.message }}
+                        {% if form.message.help_text %}
+                            <div class="form-text">{{ form.message.help_text }}</div>
+                        {% endif %}
+                        {% if form.message.errors %}
+                            <div class="text-danger">
+                                {% for error in form.message.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Ссылка на создание нового сообщения -->
+                        <div class="mt-2">
+                            <a href="{% url 'mailings:message_create' %}" 
+                               class="btn btn-outline-secondary btn-sm"
+                               target="_blank">
+                                <i class="fas fa-plus me-1"></i>
+                                Создать новое сообщение
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Выбор клиентов -->
+                    <div class="mb-4">
+                        <label for="{{ form.clients.id_for_label }}" class="form-label">
+                            <i class="fas fa-users me-1"></i>
+                            {{ form.clients.label }}
+                        </label>
+                        
+                        <!-- Поиск клиентов -->
+                        <div class="mb-3">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="client-search"
+                                   placeholder="Поиск клиентов по имени или email..."
+                                   autocomplete="off">
+                        </div>
+                        
+                        <!-- Список клиентов -->
+                        <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                            {% if form.clients.field.queryset %}
+                                <div class="mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="select-all-clients">
+                                        Выбрать всех
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="deselect-all-clients">
+                                        Снять выбор
+                                    </button>
+                                </div>
+                                
+                                <div id="clients-list">
+                                    {% for choice in form.clients %}
+                                        <div class="form-check client-item">
+                                            {{ choice.tag }}
+                                            <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                {{ choice.choice_label }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center text-muted py-3">
+                                    <i class="fas fa-users fa-2x mb-2"></i>
+                                    <div>У вас пока нет клиентов</div>
+                                    <a href="{% url 'mailings:client_create' %}" 
+                                       class="btn btn-primary btn-sm mt-2"
+                                       target="_blank">
+                                        <i class="fas fa-user-plus me-1"></i>
+                                        Добавить клиента
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.clients.help_text %}
+                            <div class="form-text">{{ form.clients.help_text }}</div>
+                        {% endif %}
+                        {% if form.clients.errors %}
+                            <div class="text-danger">
+                                {% for error in form.clients.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Общие ошибки формы -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Кнопки действий -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'mailings:mailing_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Назад к списку
+                        </a>
+                        
+                        <div>
+                            {% if object %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    Сохранить изменения
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Создать рассылку
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Подсказки -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Полезные советы
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Дата начала:</strong> Убедитесь, что дата первой отправки не в прошлом
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Получатели:</strong> Выберите релевантную аудиторию для вашего сообщения
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Сообщение:</strong> Проверьте содержание письма перед отправкой
+                    </li>
+                    <li>
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Тестирование:</strong> Сначала отправьте тестовое письмо себе
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Поиск по клиентам
+    const searchInput = document.getElementById('client-search');
+    const clientItems = document.querySelectorAll('.client-item');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            clientItems.forEach(function(item) {
+                const label = item.querySelector('label').textContent.toLowerCase();
+                if (label.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Выбрать всех клиентов
+    const selectAllBtn = document.getElementById('select-all-clients');
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            const visibleCheckboxes = Array.from(clientItems)
+                .filter(item => item.style.display !== 'none')
+                .map(item => item.querySelector('input[type="checkbox"]'));
+            
+            visibleCheckboxes.forEach(checkbox => checkbox.checked = true);
+        });
+    }
+    
+    // Снять выбор со всех клиентов
+    const deselectAllBtn = document.getElementById('deselect-all-clients');
+    if (deselectAllBtn) {
+        deselectAllBtn.addEventListener('click', function() {
+            const visibleCheckboxes = Array.from(clientItems)
+                .filter(item => item.style.display !== 'none')
+                .map(item => item.querySelector('input[type="checkbox"]'));
+            
+            visibleCheckboxes.forEach(checkbox => checkbox.checked = false);
+        });
+    }
+    
+    // Установка минимальной даты для полей datetime
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    
+    const datetimeInputs = document.querySelectorAll('input[type="datetime-local"]');
+    datetimeInputs.forEach(input => {
+        if (!input.value) {
+            input.min = minDateTime;
+        }
+    });
+    
+    // Валидация дат
+    const startDateInput = document.querySelector('input[name="first_send_datetime"]');
+    const endDateInput = document.querySelector('input[name="end_datetime"]');
+    
+    if (startDateInput && endDateInput) {
+        function validateDates() {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            
+            if (startDate && endDate && endDate <= startDate) {
+                endDateInput.setCustomValidity('Дата окончания должна быть позже даты начала');
+            } else {
+                endDateInput.setCustomValidity('');
+            }
+        }
+        
+        startDateInput.addEventListener('change', validateDates);
+        endDateInput.addEventListener('change', validateDates);
+    }
+});
+</script>
+{% endblock %}

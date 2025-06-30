@@ -22,49 +22,37 @@ from .decorators import (
     OwnerRequiredMixin, OwnerOrManagerRequiredMixin,
     user_can_edit_object, user_can_view_object
 )
+from .cache import (
+    cache_global_stats, cache_user_stats, cache_mailing_stats,
+    CacheMixin, invalidate_user_cache, invalidate_mailing_cache
+)
 
 
-class HomeView(TemplateView):
+class HomeView(CacheMixin, TemplateView):
     """
     Главная страница сайта.
 
     Отображает общую статистику по всем рассылкам в системе.
     Это первое, что видит пользователь при заходе на сайт.
+
+    Использует кеширование для улучшения производительности.
     """
 
     template_name = 'mailings/home.html'
+    cache_timeout = 900  # 15 минут
+    cache_per_user = False  # Глобальная статистика одинаковая для всех
 
     def get_context_data(self, **kwargs):
         """
         Собираем статистику для главной страницы.
 
-        Этот метод автоматически вызывается Django для подготовки
-        данных, которые будут переданы в шаблон.
+        Данные кешируются для снижения нагрузки на базу данных.
         """
         context = super().get_context_data(**kwargs)
 
-        # Попытаемся получить данные из кеша для ускорения
-        cache_key = 'home_page_stats'
-        cached_stats = cache.get(cache_key)
-
-        if cached_stats is None:
-            # Если в кеше нет данных, вычисляем статистику
-            context.update({
-                'total_mailings': Mailing.objects.count(),
-                'active_mailings': Mailing.objects.filter(
-                    status=Mailing.STATUS_STARTED
-                ).count(),
-                'unique_clients': Client.objects.values('email').distinct().count(),
-                'total_attempts': MailingAttempt.objects.count(),
-                'successful_attempts': MailingAttempt.objects.filter(
-                    status=MailingAttempt.STATUS_SUCCESS
-                ).count(),
-            })
-
-            # Сохраняем в кеш на 15 минут
-            cache.set(cache_key, context, 900)
-        else:
-            context.update(cached_stats)
+        # Получаем закешированную глобальную статистику
+        stats = cache_global_stats()
+        context.update(stats)
 
         return context
 
@@ -73,21 +61,10 @@ class HomeView(TemplateView):
 # ПРЕДСТАВЛЕНИЯ ДЛЯ УПРАВЛЕНИЯ РАССЫЛКАМИ
 # ============================================================================
 
-class OwnerRequiredMixin:
-    """
-    Миксин для ограничения доступа к объектам.
-
-    Пользователи могут просматривать и редактировать только свои объекты.
-    Это важно для безопасности - никто не должен иметь доступ к чужим данным.
-    """
-
-    def get_queryset(self):
-        """Фильтруем объекты по владельцу."""
-        queryset = super().get_queryset()
-        return queryset.filter(owner=self.request.user)
+# Удаляем старый миксин, так как теперь используем импортированный
 
 
-class MailingListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
+class MailingListView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, ListView):
     """Список всех рассылок пользователя."""
 
     model = Mailing
@@ -120,7 +97,7 @@ class MailingListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
         return context
 
 
-class MailingDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
+class MailingDetailView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, DetailView):
     """Детальная информация о рассылке."""
 
     model = Mailing
@@ -128,22 +105,12 @@ class MailingDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
     context_object_name = 'mailing'
 
     def get_context_data(self, **kwargs):
-        """Добавляем статистику по попыткам отправки."""
+        """Добавляем статистику по попыткам отправки с кешированием."""
         context = super().get_context_data(**kwargs)
 
-        # Получаем попытки отправки для этой рассылки
-        attempts = MailingAttempt.objects.filter(mailing=self.object)
-
-        context.update({
-            'attempts': attempts.order_by('-datetime')[:10],  # Последние 10 попыток
-            'total_attempts': attempts.count(),
-            'successful_attempts': attempts.filter(
-                status=MailingAttempt.STATUS_SUCCESS
-            ).count(),
-            'failed_attempts': attempts.filter(
-                status=MailingAttempt.STATUS_FAILED
-            ).count(),
-        })
+        # Получаем закешированную статистику рассылки
+        stats = cache_mailing_stats(self.object.id)
+        context.update(stats)
 
         return context
 
@@ -157,10 +124,15 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('mailings:mailing_list')
 
     def form_valid(self, form):
-        """Устанавливаем владельца рассылки."""
+        """Устанавливаем владельца рассылки и инвалидируем кеш."""
         form.instance.owner = self.request.user
+        response = super().form_valid(form)
+
+        # Инвалидируем кеш пользователя
+        invalidate_user_cache(self.request.user.id)
+
         messages.success(self.request, 'Рассылка успешно создана!')
-        return super().form_valid(form)
+        return response
 
     def get_form_kwargs(self):
         """Передаем текущего пользователя в форму."""
@@ -178,9 +150,15 @@ class MailingUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     success_url = reverse_lazy('mailings:mailing_list')
 
     def form_valid(self, form):
-        """Добавляем сообщение об успешном обновлении."""
+        """Добавляем сообщение об успешном обновлении и инвалидируем кеш."""
+        response = super().form_valid(form)
+
+        # Инвалидируем кеш пользователя и рассылки
+        invalidate_user_cache(self.request.user.id)
+        invalidate_mailing_cache(self.object.id)
+
         messages.success(self.request, 'Рассылка успешно обновлена!')
-        return super().form_valid(form)
+        return response
 
     def get_form_kwargs(self):
         """Передаем текущего пользователя в форму."""
@@ -197,9 +175,19 @@ class MailingDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     success_url = reverse_lazy('mailings:mailing_list')
 
     def delete(self, request, *args, **kwargs):
-        """Добавляем сообщение об успешном удалении."""
+        """Добавляем сообщение об успешном удалении и инвалидируем кеш."""
+        mailing = self.get_object()
+        user_id = mailing.owner.id
+        mailing_id = mailing.id
+
+        response = super().delete(request, *args, **kwargs)
+
+        # Инвалидируем кеш пользователя и рассылки
+        invalidate_user_cache(user_id)
+        invalidate_mailing_cache(mailing_id)
+
         messages.success(request, 'Рассылка успешно удалена!')
-        return super().delete(request, *args, **kwargs)
+        return response
 
 
 class MailingSendView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
@@ -223,6 +211,10 @@ class MailingSendView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
         if mailing.status == Mailing.STATUS_CREATED:
             mailing.status = Mailing.STATUS_STARTED
             mailing.save()
+
+        # Инвалидируем кеш после отправки
+        invalidate_user_cache(mailing.owner.id)
+        invalidate_mailing_cache(mailing.id)
 
         # Показываем результат
         if success_count == total_count:
@@ -289,7 +281,7 @@ class MailingSendView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
 # ПРЕДСТАВЛЕНИЯ ДЛЯ УПРАВЛЕНИЯ СООБЩЕНИЯМИ
 # ============================================================================
 
-class MessageListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
+class MessageListView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, ListView):
     """Список всех сообщений пользователя."""
 
     model = Message
@@ -308,7 +300,7 @@ class MessageListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
         return queryset.order_by('-created_at')
 
 
-class MessageDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
+class MessageDetailView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, DetailView):
     """Детальная информация о сообщении."""
 
     model = Message
@@ -362,7 +354,7 @@ class MessageDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
 # ПРЕДСТАВЛЕНИЯ ДЛЯ УПРАВЛЕНИЯ КЛИЕНТАМИ
 # ============================================================================
 
-class ClientListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
+class ClientListView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, ListView):
     """Список всех клиентов пользователя."""
 
     model = Client
@@ -384,7 +376,7 @@ class ClientListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
         return queryset.order_by('full_name')
 
 
-class ClientDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
+class ClientDetailView(LoginRequiredMixin, OwnerOrManagerRequiredMixin, DetailView):
     """Детальная информация о клиенте."""
 
     model = Client
@@ -447,8 +439,16 @@ class MailingAttemptListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        """Показываем только попытки рассылок текущего пользователя."""
-        return MailingAttempt.objects.filter(
+        """Показываем только попытки рассылок текущего пользователя или все для менеджеров."""
+        queryset = super().get_queryset()
+
+        # Администраторы и менеджеры видят все попытки
+        if (self.request.user.is_superuser or
+            getattr(self.request.user, 'is_manager', False)):
+            return queryset.select_related('mailing').order_by('-datetime')
+
+        # Обычные пользователи видят только попытки своих рассылок
+        return queryset.filter(
             mailing__owner=self.request.user
         ).select_related('mailing').order_by('-datetime')
 
@@ -461,43 +461,53 @@ class MailingAttemptDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'attempt'
 
     def get_queryset(self):
-        """Ограничиваем доступ к попыткам своих рассылок."""
-        return MailingAttempt.objects.filter(mailing__owner=self.request.user)
+        """Ограничиваем доступ к попыткам в зависимости от роли пользователя."""
+        queryset = super().get_queryset()
+
+        # Администраторы и менеджеры видят все попытки
+        if (self.request.user.is_superuser or
+            getattr(self.request.user, 'is_manager', False)):
+            return queryset
+
+        # Обычные пользователи видят только попытки своих рассылок
+        return queryset.filter(mailing__owner=self.request.user)
 
 
-class MailingStatsView(LoginRequiredMixin, TemplateView):
+class MailingStatsView(LoginRequiredMixin, CacheMixin, TemplateView):
     """Страница со статистикой по рассылкам пользователя."""
 
     template_name = 'mailings/mailing_stats.html'
+    cache_timeout = 600  # 10 минут
+    cache_per_user = True
 
     def get_context_data(self, **kwargs):
-        """Собираем подробную статистику для пользователя."""
+        """Собираем подробную статистику для пользователя с кешированием."""
         context = super().get_context_data(**kwargs)
 
-        user_mailings = Mailing.objects.filter(owner=self.request.user)
-        user_attempts = MailingAttempt.objects.filter(
-            mailing__owner=self.request.user
-        )
+        # Определяем, какие данные показывать в зависимости от роли
+        if (self.request.user.is_superuser or
+            getattr(self.request.user, 'is_manager', False)):
+            # Менеджеры и администраторы видят общую статистику
+            stats = cache_global_stats()
+            context['is_global_stats'] = True
+        else:
+            # Обычные пользователи видят только свою статистику
+            stats = cache_user_stats(self.request.user.id)
+            context['is_global_stats'] = False
+
+        context.update(stats)
+
+        # Дополнительные данные для графиков (не кешируем, так как они специфичны)
+        if context['is_global_stats']:
+            user_mailings = Mailing.objects.all()
+            user_attempts = MailingAttempt.objects.all()
+        else:
+            user_mailings = Mailing.objects.filter(owner=self.request.user)
+            user_attempts = MailingAttempt.objects.filter(
+                mailing__owner=self.request.user
+            )
 
         context.update({
-            # Общая статистика
-            'total_mailings': user_mailings.count(),
-            'active_mailings': user_mailings.filter(
-                status=Mailing.STATUS_STARTED
-            ).count(),
-            'completed_mailings': user_mailings.filter(
-                status=Mailing.STATUS_COMPLETED
-            ).count(),
-
-            # Статистика по попыткам
-            'total_attempts': user_attempts.count(),
-            'successful_attempts': user_attempts.filter(
-                status=MailingAttempt.STATUS_SUCCESS
-            ).count(),
-            'failed_attempts': user_attempts.filter(
-                status=MailingAttempt.STATUS_FAILED
-            ).count(),
-
             # Данные для графиков (последние рассылки)
             'recent_mailings': user_mailings.order_by('-created_at')[:5],
             'recent_attempts': user_attempts.order_by('-datetime')[:10],

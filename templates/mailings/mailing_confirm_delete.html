@@ -1,0 +1,73 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Подтверждение удаления - Сервис рассылок{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Подтверждение удаления
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Внимание!</strong> Это действие нельзя отменить.
+                </div>
+                
+                <p class="mb-4">
+                    Вы уверены, что хотите удалить рассылку 
+                    <strong>"{{ object.name }}"</strong>?
+                </p>
+                
+                <!-- Информация об объекте -->
+                <div class="bg-light p-3 rounded mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Название:</strong><br>
+                            {{ object.name }}
+                        </div>
+                        <div class="col-6">
+                            <strong>Статус:</strong><br>
+                            <span class="badge 
+                                {% if object.status == 'created' %}status-created
+                                {% elif object.status == 'started' %}status-started
+                                {% elif object.status == 'completed' %}status-completed
+                                {% endif %}">
+                                {{ object.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <strong>Создана:</strong><br>
+                            {{ object.created_at|date:"d.m.Y H:i" }}
+                        </div>
+                        <div class="col-6">
+                            <strong>Получателей:</strong><br>
+                            {{ object.clients.count }}
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'mailings:mailing_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>
+                            Да, удалить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

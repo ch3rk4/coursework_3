@@ -1,0 +1,207 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Мой профиль - Сервис рассылок{% endblock %}
+
+{% block breadcrumbs %}
+<div class="container mt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+            <li class="breadcrumb-item active">Профиль</li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Профиль пользователя -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-circle me-2"></i>
+                    Мой профиль
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <!-- Аватар -->
+                <div class="mb-3">
+                    {% if profile_user.avatar %}
+                        <img src="{{ profile_user.avatar.url }}" 
+                             alt="Аватар" 
+                             class="rounded-circle" 
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" 
+                             style="width: 120px; height: 120px;">
+                            <i class="fas fa-user fa-4x text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Имя пользователя -->
+                <h4 class="mb-1">
+                    {% if profile_user.first_name or profile_user.last_name %}
+                        {{ profile_user.first_name }} {{ profile_user.last_name }}
+                    {% else %}
+                        {{ profile_user.email }}
+                    {% endif %}
+                </h4>
+                
+                <!-- Email -->
+                <p class="text-muted mb-3">
+                    <i class="fas fa-envelope me-1"></i>
+                    {{ profile_user.email }}
+                </p>
+                
+                <!-- Дата регистрации -->
+                <p class="text-muted small">
+                    <i class="fas fa-calendar me-1"></i>
+                    Зарегистрирован {{ profile_user.date_joined|date:"d.m.Y" }}
+                </p>
+                
+                <!-- Кнопка редактирования -->
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>
+                    Редактировать профиль
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Информация о профиле -->
+    <div class="col-lg-8">
+        <div class="row g-3 mb-4">
+            <!-- Общая статистика -->
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number">{{ user.mailing_set.count }}</div>
+                    <div class="stats-label">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Рассылок
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card success">
+                    <div class="stats-number">{{ user.message_set.count }}</div>
+                    <div class="stats-label">
+                        <i class="fas fa-message me-2"></i>
+                        Сообщений
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card info">
+                    <div class="stats-number">{{ user.client_set.count }}</div>
+                    <div class="stats-label">
+                        <i class="fas fa-users me-2"></i>
+                        Клиентов
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Детальная информация -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Детальная информация
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Имя:</strong></td>
+                                <td>{{ profile_user.first_name|default:"Не указано" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Фамилия:</strong></td>
+                                <td>{{ profile_user.last_name|default:"Не указано" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>{{ profile_user.email }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Телефон:</strong></td>
+                                <td>{{ profile_user.phone|default:"Не указан" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Страна:</strong></td>
+                                <td>{{ profile_user.country|default:"Не указана" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Статус:</strong></td>
+                                <td>
+                                    {% if profile_user.is_active %}
+                                        <span class="badge status-success">Активен</span>
+                                    {% else %}
+                                        <span class="badge status-failed">Неактивен</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Быстрые действия -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Быстрые действия
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                            <a href="{% url 'mailings:mailing_create' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                Создать рассылку
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                            <a href="{% url 'mailings:client_create' %}" class="btn btn-success">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Добавить клиента
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                            <a href="{% url 'mailings:message_create' %}" class="btn btn-info">
+                                <i class="fas fa-plus me-2"></i>
+                                Создать сообщение
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                            <a href="{% url 'mailings:mailing_stats' %}" class="btn btn-warning">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Статистика
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Доступ запрещен - Сервис рассылок{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="text-center">
+            <!-- Иконка ошибки -->
+            <div class="mb-4">
+                <i class="fas fa-ban fa-6x text-danger"></i>
+            </div>
+            
+            <!-- Заголовок -->
+            <h1 class="display-4 text-danger mb-3">403</h1>
+            <h2 class="mb-3">Доступ запрещен</h2>
+            
+            <!-- Сообщение об ошибке -->
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ message|default:"У вас нет прав доступа к этой странице." }}
+            </div>
+            
+            <!-- Дополнительная информация -->
+            <p class="text-muted mb-4">
+                Возможные причины:
+            </p>
+            <ul class="list-unstyled text-muted mb-4">
+                <li><i class="fas fa-user-slash me-2"></i>Недостаточно прав доступа</li>
+                <li><i class="fas fa-lock me-2"></i>Требуется роль менеджера или администратора</li>
+                <li><i class="fas fa-shield-alt me-2"></i>Доступ только для владельца объекта</li>
+            </ul>
+            
+            <!-- Действия -->
+            <div class="d-flex justify-content-center gap-3">
+                <button onclick="history.back()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Назад
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>
+                    На главную
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user me-2"></i>
+                        Профиль
+                    </a>
+                {% endif %}
+            </div>
+            
+            <!-- Информация о ролях -->
+            {% if user.is_authenticated %}
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Информация о вашей учетной записи
+                        </h6>
+                        <div class="row text-start">
+                            <div class="col-6">
+                                <strong>Пользователь:</strong><br>
+                                {{ user.email }}
+                            </div>
+                            <div class="col-6">
+                                <strong>Роль:</strong><br>
+                                <span class="badge 
+                                    {% if user.is_superuser %}bg-danger
+                                    {% elif user.is_manager %}bg-warning
+                                    {% else %}bg-primary
+                                    {% endif %}">
+                                    {{ user.role_display|default:"Пользователь" }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {% if not user.is_superuser and not user.is_manager %}
+                            <div class="mt-3 p-3 bg-light rounded">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    <strong>Подсказка:</strong> Для получения расширенных прав 
+                                    обратитесь к администратору системы.
+                                </small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.fa-ban {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+</style>
+{% endblock %}

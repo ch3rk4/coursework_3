@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Сервис рассылок{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome для иконок -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <!-- Логотип и название сайта -->
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-envelope me-2"></i>
+                Сервис рассылок
+            </a>
+
+            <!-- Кнопка для мобильного меню -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Основное меню -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i>Главная
+                        </a>
+                    </li>
+
+                    <!-- Меню для авторизованных пользователей -->
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="mailingsDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-paper-plane me-1"></i>Рассылки
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'mailings:mailing_list' %}">
+                                    <i class="fas fa-list me-2"></i>Мои рассылки
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'mailings:mailing_create' %}">
+                                    <i class="fas fa-plus me-2"></i>Создать рассылку
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'mailings:mailing_stats' %}">
+                                    <i class="fas fa-chart-bar me-2"></i>Статистика
+                                </a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-message me-1"></i>Сообщения
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'mailings:message_list' %}">
+                                    <i class="fas fa-list me-2"></i>Мои сообщения
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'mailings:message_create' %}">
+                                    <i class="fas fa-plus me-2"></i>Создать сообщение
+                                </a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="clientsDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-users me-1"></i>Клиенты
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'mailings:client_list' %}">
+                                    <i class="fas fa-list me-2"></i>Мои клиенты
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'mailings:client_create' %}">
+                                    <i class="fas fa-user-plus me-2"></i>Добавить клиента
+                                </a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'mailings:attempt_list' %}">
+                                <i class="fas fa-history me-1"></i>Логи
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Правая часть меню (пользователь) -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>
+                                {{ user.first_name|default:user.email }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">
+                                    <i class="fas fa-user me-2"></i>Профиль
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'users:profile_edit' %}">
+                                    <i class="fas fa-edit me-2"></i>Редактировать профиль
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'users:logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Войти
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Регистрация
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="main-content">
+        <!-- Breadcrumbs (навигационная цепочка) -->
+        {% block breadcrumbs %}{% endblock %}
+
+        <!-- Сообщения Django (уведомления) -->
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {% if message.tags == 'error' %}
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                        {% elif message.tags == 'success' %}
+                            <i class="fas fa-check-circle me-2"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Заголовок страницы -->
+        {% block page_header %}{% endblock %}
+
+        <!-- Основное содержимое страницы -->
+        <div class="container my-4">
+            {% block content %}
+                <div class="text-center py-5">
+                    <h2>Добро пожаловать в сервис рассылок!</h2>
+                    <p class="text-muted">Управляйте своими рассылками легко и эффективно.</p>
+                </div>
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer class="bg-light text-center text-muted py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0">
+                &copy; {% now "Y" %} Сервис рассылок.
+                <small>Создано с помощью Django и Bootstrap</small>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <!-- Кастомные скрипты -->
+    <script>
+        // Автоматическое скрытие уведомлений через 5 секунд
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bootstrapAlert = new bootstrap.Alert(alert);
+                bootstrapAlert.close();
+            });
+        }, 5000);
+
+        // Подтверждение удаления
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteButtons = document.querySelectorAll('.delete-confirm');
+            deleteButtons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Вы уверены, что хотите удалить этот элемент?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

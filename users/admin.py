@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import User
 
 
@@ -13,27 +14,33 @@ class CustomUserAdmin(UserAdmin):
     """
 
     # Поля для отображения в списке пользователей
-    list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'is_active')
+    list_display = (
+        "email",
+        "username",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_active",
+    )
 
     # Поля для поиска
-    search_fields = ('email', 'username', 'first_name', 'last_name')
+    search_fields = ("email", "username", "first_name", "last_name")
 
     # Фильтры в боковой панели
-    list_filter = ('is_staff', 'is_active', 'date_joined', 'country')
+    list_filter = ("is_staff", "is_active", "date_joined", "country")
 
     # Сортировка по умолчанию
-    ordering = ('email',)
+    ordering = ("email",)
 
     # Настройка формы редактирования пользователя
     fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительная информация', {
-            'fields': ('avatar', 'phone', 'country')
-        }),
+        ("Дополнительная информация", {"fields": ("avatar", "phone", "country")}),
     )
 
     # Настройка формы создания пользователя
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Дополнительная информация', {
-            'fields': ('email', 'avatar', 'phone', 'country')
-        }),
+        (
+            "Дополнительная информация",
+            {"fields": ("email", "avatar", "phone", "country")},
+        ),
     )

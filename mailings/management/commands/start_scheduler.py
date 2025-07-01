@@ -3,13 +3,14 @@
 """
 
 import logging
-from django.core.management.base import BaseCommand
-from django.conf import settings
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django_apscheduler import util
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
-from django_apscheduler import util
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ def send_scheduled_mailings():
     logger.info("Запуск автоматической отправки рассылок")
 
     try:
-        call_command('send_mailings', verbosity=1)
+        call_command("send_mailings", verbosity=1)
         logger.info("Автоматическая отправка рассылок завершена успешно")
     except Exception as e:
         logger.error(f"Ошибка при автоматической отправке рассылок: {e}")

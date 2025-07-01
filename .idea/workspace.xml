@@ -6,6 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/create_test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/create_test_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/send__mailings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/send__mailings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/start_scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/start_scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/view_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/view_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/manager_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/manager_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/middleware.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -344,7 +366,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751382781905</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1751383950689</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1751383950690</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

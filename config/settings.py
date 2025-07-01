@@ -126,25 +126,18 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 
 # Cache settings
-CACHE_ENABLED = config('CACHE_ENABLED', default=True, cast=bool)
+CACHE_ENABLED = config('CACHE_ENABLED', default=False, cast=bool)
 
-if CACHE_ENABLED:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'unique-snowflake',
-        }
+# Используем простой DummyCache, чтобы избежать ошибок сериализации
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
+}
 
-# Login URLs
-LOGIN_URL = '/users/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-# APScheduler settings
-APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-APSCHEDULER_RUN_NOW_TIMEOUT = 25
-
+# Также добавьте в конец файла логирование, если его нет:
+import os
+from pathlib import Path
 
 # Создаем папку для логов
 LOGS_DIR = BASE_DIR / 'logs'
@@ -162,9 +155,6 @@ LOGGING = {
             'format': '{levelname} {message}',
             'style': '{',
         },
-        'json': {
-            'format': '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "module": "%(module)s", "message": "%(message)s"}',
-        },
     },
     'handlers': {
         'file': {
@@ -177,11 +167,6 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'verbose',
         },
     },
     'root': {
@@ -204,14 +189,3 @@ LOGGING = {
         },
     },
 }
-
-# Дополнительные настройки для django-apscheduler
-SCHEDULER_CONFIG = {
-    "apscheduler.jobstores.default": {
-        "class": "django_apscheduler.jobstores:DjangoJobStore"
-    },
-    'apscheduler.executors.processpool': {
-        "type": "threadpool"
-    },
-}
-SCHEDULER_AUTOSTART = True

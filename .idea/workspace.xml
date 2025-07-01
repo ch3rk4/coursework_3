@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="refresh urls from mailings" />
+    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="create start_scheduler">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +15,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -326,11 +328,18 @@
       <option name="project" value="LOCAL" />
       <updated>1751370025303</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="create start_scheduler">
+      <option name="closed" value="true" />
+      <created>1751370276334</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1751370276334</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refresh models from users" />
     <MESSAGE value="create admin from users" />
     <MESSAGE value="create admin from mailings" />
     <MESSAGE value="create urls" />
@@ -355,6 +364,7 @@
     <MESSAGE value="create manager_views" />
     <MESSAGE value="create dashboard" />
     <MESSAGE value="refresh urls from mailings" />
-    <option name="LAST_COMMIT_MESSAGE" value="refresh urls from mailings" />
+    <MESSAGE value="create start_scheduler" />
+    <option name="LAST_COMMIT_MESSAGE" value="create start_scheduler" />
   </component>
 </project>

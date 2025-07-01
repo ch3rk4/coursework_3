@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="fixes" />
+    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="refresh urls from mailings" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -278,16 +278,58 @@
       <option name="project" value="LOCAL" />
       <updated>1751369609757</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="create message_form">
+      <option name="closed" value="true" />
+      <created>1751369729839</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369729839</updated>
+    </task>
+    <task id="LOCAL-00028" summary="create client_form">
+      <option name="closed" value="true" />
+      <created>1751369766264</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369766264</updated>
+    </task>
+    <task id="LOCAL-00029" summary="create attempt_list">
+      <option name="closed" value="true" />
+      <created>1751369806783</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369806783</updated>
+    </task>
+    <task id="LOCAL-00030" summary="create manager_views">
+      <option name="closed" value="true" />
+      <created>1751369919595</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369919595</updated>
+    </task>
+    <task id="LOCAL-00031" summary="create dashboard">
+      <option name="closed" value="true" />
+      <created>1751369978673</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369978673</updated>
+    </task>
+    <task id="LOCAL-00032" summary="refresh urls from mailings">
+      <option name="closed" value="true" />
+      <created>1751370025303</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1751370025303</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="install requirements" />
-    <MESSAGE value="create django-project" />
-    <MESSAGE value="create gitignore" />
-    <MESSAGE value="create settings from config" />
-    <MESSAGE value="create models from users" />
-    <MESSAGE value="create models from mailings" />
     <MESSAGE value="refresh models from users" />
     <MESSAGE value="create admin from users" />
     <MESSAGE value="create admin from mailings" />
@@ -307,6 +349,12 @@
     <MESSAGE value="command for send mailings" />
     <MESSAGE value="command for logs" />
     <MESSAGE value="fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
+    <MESSAGE value="create message_form" />
+    <MESSAGE value="create client_form" />
+    <MESSAGE value="create attempt_list" />
+    <MESSAGE value="create manager_views" />
+    <MESSAGE value="create dashboard" />
+    <MESSAGE value="refresh urls from mailings" />
+    <option name="LAST_COMMIT_MESSAGE" value="refresh urls from mailings" />
   </component>
 </project>

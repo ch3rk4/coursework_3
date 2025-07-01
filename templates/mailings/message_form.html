@@ -1,0 +1,136 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    {% if object %}Редактирование сообщения{% else %}Создание сообщения{% endif %} - Сервис рассылок
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="container mt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'mailings:message_list' %}">Сообщения</a></li>
+            <li class="breadcrumb-item active">
+                {% if object %}Редактирование{% else %}Создание{% endif %}
+            </li>
+        </ol>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    {% if object %}
+                        <i class="fas fa-edit me-2"></i>
+                        Редактирование сообщения "{{ object.subject }}"
+                    {% else %}
+                        <i class="fas fa-plus me-2"></i>
+                        Создание нового сообщения
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Тема сообщения -->
+                    <div class="mb-4">
+                        <label for="{{ form.subject.id_for_label }}" class="form-label">
+                            <i class="fas fa-tag me-1"></i>
+                            {{ form.subject.label }}
+                        </label>
+                        {{ form.subject }}
+                        {% if form.subject.help_text %}
+                            <div class="form-text">{{ form.subject.help_text }}</div>
+                        {% endif %}
+                        {% if form.subject.errors %}
+                            <div class="text-danger">
+                                {% for error in form.subject.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Содержание сообщения -->
+                    <div class="mb-4">
+                        <label for="{{ form.body.id_for_label }}" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>
+                            {{ form.body.label }}
+                        </label>
+                        {{ form.body }}
+                        {% if form.body.help_text %}
+                            <div class="form-text">{{ form.body.help_text }}</div>
+                        {% endif %}
+                        {% if form.body.errors %}
+                            <div class="text-danger">
+                                {% for error in form.body.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Общие ошибки формы -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Кнопки действий -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'mailings:message_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Назад к списку
+                        </a>
+                        
+                        <div>
+                            {% if object %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    Сохранить изменения
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Создать сообщение
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Предварительный просмотр -->
+        {% if object %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-eye me-2"></i>
+                        Предварительный просмотр
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="border rounded p-3 bg-light">
+                        <div class="mb-2">
+                            <strong>Тема:</strong> {{ object.subject }}
+                        </div>
+                        <div>
+                            <strong>Содержание:</strong>
+                            <div class="mt-2">{{ object.body|linebreaks }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

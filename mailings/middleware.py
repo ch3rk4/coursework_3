@@ -2,11 +2,10 @@
 Middleware для управления правами доступа.
 """
 
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from django.contrib.auth.models import Group
-from django.urls import resolve
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -42,7 +41,7 @@ class PermissionsMiddleware:
             return True
 
         try:
-            managers_group = Group.objects.get(name='Менеджеры')
+            managers_group = Group.objects.get(name="Менеджеры")
             return managers_group in user.groups.all()
         except Group.DoesNotExist:
             return False
@@ -50,11 +49,11 @@ class PermissionsMiddleware:
     def get_user_role_display(self, user):
         """Возвращает отображаемое название роли пользователя."""
         if user.is_superuser:
-            return 'Администратор'
+            return "Администратор"
         elif self.is_manager(user):
-            return 'Менеджер'
+            return "Менеджер"
         else:
-            return 'Пользователь'
+            return "Пользователь"
 
 
 class ManagerAccessMixin:
@@ -71,11 +70,15 @@ class ManagerAccessMixin:
             return self.handle_no_permission()
 
         # Проверяем, является ли пользователь менеджером или администратором
-        if not (request.user.is_superuser or getattr(request.user, 'is_manager', False)):
+        if not (
+            request.user.is_superuser or getattr(request.user, "is_manager", False)
+        ):
             return HttpResponseForbidden(
-                render(request, 'errors/403.html', {
-                    'message': 'У вас нет прав доступа к этому разделу.'
-                })
+                render(
+                    request,
+                    "errors/403.html",
+                    {"message": "У вас нет прав доступа к этому разделу."},
+                )
             )
 
         return super().dispatch(request, *args, **kwargs)
@@ -98,14 +101,14 @@ def check_object_ownership(user, obj):
         return True
 
     # Владельцы могут редактировать свои объекты
-    if hasattr(obj, 'owner') and obj.owner == user:
+    if hasattr(obj, "owner") and obj.owner == user:
         return True
 
     # Менеджеры могут только просматривать, но не редактировать чужие объекты
     return False
 
 
-def get_accessible_objects(model, user, action='view'):
+def get_accessible_objects(model, user, action="view"):
     """
     Возвращает объекты, доступные пользователю в зависимости от его роли.
 
@@ -123,8 +126,8 @@ def get_accessible_objects(model, user, action='view'):
         return model.objects.all()
 
     # Менеджеры могут просматривать всё, но редактировать только своё
-    if getattr(user, 'is_manager', False):
-        if action == 'view':
+    if getattr(user, "is_manager", False):
+        if action == "view":
             return model.objects.all()
         else:
             return model.objects.filter(owner=user)

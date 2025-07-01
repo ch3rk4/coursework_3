@@ -6,6 +6,6 @@ class MailingsConfig(AppConfig):
     Конфигурация приложения рассылок.
     """
 
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'mailings'
-    verbose_name = 'Рассылки'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "mailings"
+    verbose_name = "Рассылки"

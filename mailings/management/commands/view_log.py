@@ -4,11 +4,11 @@
 
 import json
 import os
-from datetime import datetime, timedelta
-from django.core.management.base import BaseCommand
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.utils import timezone
+from django.core.management.base import BaseCommand
 
 User = get_user_model()
 
@@ -16,62 +16,62 @@ User = get_user_model()
 class Command(BaseCommand):
     """Команда для просмотра и анализа логов."""
 
-    help = 'Просмотр и анализ логов приложения'
+    help = "Просмотр и анализ логов приложения"
 
     def add_arguments(self, parser):
         """Добавляем аргументы командной строки."""
         parser.add_argument(
-            '--last',
+            "--last",
             type=int,
             default=50,
-            help='Количество последних записей для показа (по умолчанию: 50)',
+            help="Количество последних записей для показа (по умолчанию: 50)",
         )
         parser.add_argument(
-            '--level',
-            choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
-            help='Фильтр по уровню логирования',
+            "--level",
+            choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+            help="Фильтр по уровню логирования",
         )
         parser.add_argument(
-            '--user-id',
+            "--user-id",
             type=int,
-            help='Фильтр по ID пользователя',
+            help="Фильтр по ID пользователя",
         )
         parser.add_argument(
-            '--mailing-id',
+            "--mailing-id",
             type=int,
-            help='Фильтр по ID рассылки',
+            help="Фильтр по ID рассылки",
         )
         parser.add_argument(
-            '--date',
-            help='Фильтр по дате (YYYY-MM-DD)',
+            "--date",
+            help="Фильтр по дате (YYYY-MM-DD)",
         )
         parser.add_argument(
-            '--stats',
-            action='store_true',
-            help='Показать статистику логов',
+            "--stats",
+            action="store_true",
+            help="Показать статистику логов",
         )
         parser.add_argument(
-            '--errors',
-            action='store_true',
-            help='Показать только ошибки',
+            "--errors",
+            action="store_true",
+            help="Показать только ошибки",
         )
         parser.add_argument(
-            '--follow',
-            action='store_true',
-            help='Следить за логами в реальном времени',
+            "--follow",
+            action="store_true",
+            help="Следить за логами в реальном времени",
         )
 
     def handle(self, *args, **options):
         """Основная логика команды."""
 
-        if options['stats']:
+        if options["stats"]:
             self.show_stats()
             return
 
-        if options['errors']:
-            options['level'] = 'ERROR'
+        if options["errors"]:
+            options["level"] = "ERROR"
 
-        if options['follow']:
+        if options["follow"]:
             self.follow_logs(options)
         else:
             self.show_logs(options)
@@ -82,9 +82,7 @@ class Command(BaseCommand):
         log_files = self.get_log_files()
 
         if not log_files:
-            self.stdout.write(
-                self.style.WARNING('Файлы логов не найдены')
-            )
+            self.stdout.write(self.style.WARNING("Файлы логов не найдены"))
             return
 
         # Собираем все записи логов
@@ -94,14 +92,14 @@ class Command(BaseCommand):
             all_logs.extend(logs)
 
         # Сортируем по времени
-        all_logs.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+        all_logs.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
 
         # Применяем лимит
-        limited_logs = all_logs[:options['last']]
+        limited_logs = all_logs[: options["last"]]
 
         if not limited_logs:
             self.stdout.write(
-                self.style.WARNING('Логи не найдены по указанным критериям')
+                self.style.WARNING("Логи не найдены по указанным критериям")
             )
             return
 
@@ -114,7 +112,7 @@ class Command(BaseCommand):
         logs = []
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -126,10 +124,10 @@ class Command(BaseCommand):
                     except json.JSONDecodeError:
                         # Если не JSON, создаем простую структуру
                         log_entry = {
-                            'timestamp': datetime.now().isoformat(),
-                            'level': 'INFO',
-                            'message': line,
-                            'raw': True
+                            "timestamp": datetime.now().isoformat(),
+                            "level": "INFO",
+                            "message": line,
+                            "raw": True,
                         }
 
                     # Применяем фильтры
@@ -139,9 +137,7 @@ class Command(BaseCommand):
         except FileNotFoundError:
             pass
         except Exception as e:
-            self.stdout.write(
-                self.style.ERROR(f'Ошибка чтения файла {file_path}: {e}')
-            )
+            self.stdout.write(self.style.ERROR(f"Ошибка чтения файла {file_path}: {e}"))
 
         return logs
 
@@ -149,22 +145,25 @@ class Command(BaseCommand):
         """Проверяет, соответствует ли запись фильтрам."""
 
         # Фильтр по уровню
-        if options['level'] and log_entry.get('level') != options['level']:
+        if options["level"] and log_entry.get("level") != options["level"]:
             return False
 
         # Фильтр по пользователю
-        if options['user_id'] and log_entry.get('user_id') != options['user_id']:
+        if options["user_id"] and log_entry.get("user_id") != options["user_id"]:
             return False
 
         # Фильтр по рассылке
-        if options['mailing_id'] and log_entry.get('mailing_id') != options['mailing_id']:
+        if (
+            options["mailing_id"]
+            and log_entry.get("mailing_id") != options["mailing_id"]
+        ):
             return False
 
         # Фильтр по дате
-        if options['date']:
+        if options["date"]:
             try:
-                log_date = datetime.fromisoformat(log_entry.get('timestamp', ''))
-                filter_date = datetime.strptime(options['date'], '%Y-%m-%d').date()
+                log_date = datetime.fromisoformat(log_entry.get("timestamp", ""))
+                filter_date = datetime.strptime(options["date"], "%Y-%m-%d").date()
                 if log_date.date() != filter_date:
                     return False
             except (ValueError, TypeError):
@@ -175,27 +174,25 @@ class Command(BaseCommand):
     def display_logs(self, logs):
         """Отображает логи в удобном формате."""
 
-        self.stdout.write(
-            self.style.SUCCESS(f'\n=== ЛОГИ ({len(logs)} записей) ===\n')
-        )
+        self.stdout.write(self.style.SUCCESS(f"\n=== ЛОГИ ({len(logs)} записей) ===\n"))
 
         for log in logs:
             # Определяем цвет по уровню
-            level = log.get('level', 'INFO')
-            if level == 'ERROR' or level == 'CRITICAL':
+            level = log.get("level", "INFO")
+            if level == "ERROR" or level == "CRITICAL":
                 level_style = self.style.ERROR
-            elif level == 'WARNING':
+            elif level == "WARNING":
                 level_style = self.style.WARNING
-            elif level == 'SUCCESS':
+            elif level == "SUCCESS":
                 level_style = self.style.SUCCESS
             else:
                 level_style = self.style.HTTP_INFO
 
             # Форматируем время
-            timestamp = log.get('timestamp', '')
+            timestamp = log.get("timestamp", "")
             try:
-                dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-                formatted_time = dt.strftime('%Y-%m-%d %H:%M:%S')
+                dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                formatted_time = dt.strftime("%Y-%m-%d %H:%M:%S")
             except:
                 formatted_time = timestamp
 
@@ -205,42 +202,42 @@ class Command(BaseCommand):
             )
 
             # Дополнительная информация
-            if log.get('user_id'):
-                self.stdout.write(f"  👤 Пользователь: {log.get('user_email', log['user_id'])}")
+            if log.get("user_id"):
+                self.stdout.write(
+                    f"  👤 Пользователь: {log.get('user_email', log['user_id'])}"
+                )
 
-            if log.get('mailing_id'):
+            if log.get("mailing_id"):
                 self.stdout.write(f"  📧 Рассылка: {log['mailing_id']}")
 
-            if log.get('ip_address'):
+            if log.get("ip_address"):
                 self.stdout.write(f"  🌐 IP: {log['ip_address']}")
 
-            if log.get('extra_data'):
-                extra = log['extra_data']
+            if log.get("extra_data"):
+                extra = log["extra_data"]
                 if isinstance(extra, dict):
                     for key, value in extra.items():
-                        if key not in ['duration_seconds']:  # Пропускаем техническую информацию
+                        if key not in [
+                            "duration_seconds"
+                        ]:  # Пропускаем техническую информацию
                             self.stdout.write(f"  ℹ️  {key}: {value}")
 
-            if log.get('exception'):
+            if log.get("exception"):
                 self.stdout.write(
                     self.style.ERROR(f"  ❌ Исключение: {log['exception']}")
                 )
 
-            self.stdout.write('')  # Пустая строка для разделения
+            self.stdout.write("")  # Пустая строка для разделения
 
     def show_stats(self):
         """Показывает статистику логов."""
 
-        self.stdout.write(
-            self.style.SUCCESS('\n=== СТАТИСТИКА ЛОГОВ ===\n')
-        )
+        self.stdout.write(self.style.SUCCESS("\n=== СТАТИСТИКА ЛОГОВ ===\n"))
 
         log_files = self.get_log_files()
 
         if not log_files:
-            self.stdout.write(
-                self.style.WARNING('Файлы логов не найдены')
-            )
+            self.stdout.write(self.style.WARNING("Файлы логов не найдены"))
             return
 
         total_logs = 0
@@ -250,30 +247,30 @@ class Command(BaseCommand):
 
         for log_file in log_files:
             file_stats = self.analyze_log_file(log_file)
-            total_logs += file_stats['total']
+            total_logs += file_stats["total"]
 
             # Суммируем статистику по уровням
-            for level, count in file_stats['levels'].items():
+            for level, count in file_stats["levels"].items():
                 level_stats[level] = level_stats.get(level, 0) + count
 
             # Суммируем статистику по пользователям
-            for user, count in file_stats['users'].items():
+            for user, count in file_stats["users"].items():
                 user_stats[user] = user_stats.get(user, 0) + count
 
             # Суммируем ежедневную статистику
-            for date, count in file_stats['daily'].items():
+            for date, count in file_stats["daily"].items():
                 daily_stats[date] = daily_stats.get(date, 0) + count
 
         # Отображаем статистику
         self.stdout.write(f"📊 Общее количество записей: {total_logs}")
-        self.stdout.write('')
+        self.stdout.write("")
 
         # Статистика по уровням
         self.stdout.write("📈 По уровням логирования:")
         for level, count in sorted(level_stats.items()):
             percentage = (count / total_logs * 100) if total_logs > 0 else 0
             self.stdout.write(f"  {level}: {count} ({percentage:.1f}%)")
-        self.stdout.write('')
+        self.stdout.write("")
 
         # Топ пользователей
         if user_stats:
@@ -281,7 +278,7 @@ class Command(BaseCommand):
             sorted_users = sorted(user_stats.items(), key=lambda x: x[1], reverse=True)
             for user, count in sorted_users[:10]:
                 self.stdout.write(f"  {user}: {count} событий")
-            self.stdout.write('')
+            self.stdout.write("")
 
         # Активность по дням
         if daily_stats:
@@ -293,53 +290,56 @@ class Command(BaseCommand):
     def analyze_log_file(self, file_path):
         """Анализирует один файл логов."""
 
-        stats = {
-            'total': 0,
-            'levels': {},
-            'users': {},
-            'daily': {}
-        }
+        stats = {"total": 0, "levels": {}, "users": {}, "daily": {}}
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if not line:
                         continue
 
-                    stats['total'] += 1
+                    stats["total"] += 1
 
                     try:
                         log_entry = json.loads(line)
 
                         # Статистика по уровням
-                        level = log_entry.get('level', 'UNKNOWN')
-                        stats['levels'][level] = stats['levels'].get(level, 0) + 1
+                        level = log_entry.get("level", "UNKNOWN")
+                        stats["levels"][level] = stats["levels"].get(level, 0) + 1
 
                         # Статистика по пользователям
-                        user_email = log_entry.get('user_email')
+                        user_email = log_entry.get("user_email")
                         if user_email:
-                            stats['users'][user_email] = stats['users'].get(user_email, 0) + 1
+                            stats["users"][user_email] = (
+                                stats["users"].get(user_email, 0) + 1
+                            )
 
                         # Ежедневная статистика
-                        timestamp = log_entry.get('timestamp')
+                        timestamp = log_entry.get("timestamp")
                         if timestamp:
                             try:
-                                dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-                                date_key = dt.strftime('%Y-%m-%d')
-                                stats['daily'][date_key] = stats['daily'].get(date_key, 0) + 1
+                                dt = datetime.fromisoformat(
+                                    timestamp.replace("Z", "+00:00")
+                                )
+                                date_key = dt.strftime("%Y-%m-%d")
+                                stats["daily"][date_key] = (
+                                    stats["daily"].get(date_key, 0) + 1
+                                )
                             except:
                                 pass
 
                     except json.JSONDecodeError:
                         # Не JSON логи
-                        stats['levels']['UNKNOWN'] = stats['levels'].get('UNKNOWN', 0) + 1
+                        stats["levels"]["UNKNOWN"] = (
+                            stats["levels"].get("UNKNOWN", 0) + 1
+                        )
 
         except FileNotFoundError:
             pass
         except Exception as e:
             self.stdout.write(
-                self.style.ERROR(f'Ошибка анализа файла {file_path}: {e}')
+                self.style.ERROR(f"Ошибка анализа файла {file_path}: {e}")
             )
 
         return stats
@@ -347,14 +347,14 @@ class Command(BaseCommand):
     def get_log_files(self):
         """Возвращает список файлов логов."""
 
-        logs_dir = settings.BASE_DIR / 'logs'
+        logs_dir = settings.BASE_DIR / "logs"
 
         if not os.path.exists(logs_dir):
             return []
 
         log_files = []
         for filename in os.listdir(logs_dir):
-            if filename.endswith('.log'):
+            if filename.endswith(".log"):
                 log_files.append(logs_dir / filename)
 
         return sorted(log_files)
@@ -363,7 +363,7 @@ class Command(BaseCommand):
         """Следит за логами в реальном времени."""
 
         self.stdout.write(
-            self.style.SUCCESS('Слежение за логами... (Ctrl+C для остановки)')
+            self.style.SUCCESS("Слежение за логами... (Ctrl+C для остановки)")
         )
 
         # Простая реализация tail -f для логов
@@ -371,16 +371,14 @@ class Command(BaseCommand):
 
         log_files = self.get_log_files()
         if not log_files:
-            self.stdout.write(
-                self.style.WARNING('Файлы логов не найдены')
-            )
+            self.stdout.write(self.style.WARNING("Файлы логов не найдены"))
             return
 
         # Запоминаем последние позиции в файлах
         file_positions = {}
         for log_file in log_files:
             try:
-                with open(log_file, 'r') as f:
+                with open(log_file, "r") as f:
                     f.seek(0, 2)  # Переходим в конец файла
                     file_positions[log_file] = f.tell()
             except:
@@ -392,7 +390,7 @@ class Command(BaseCommand):
 
                 for log_file in log_files:
                     try:
-                        with open(log_file, 'r') as f:
+                        with open(log_file, "r") as f:
                             f.seek(file_positions[log_file])
                             new_lines = f.readlines()
                             file_positions[log_file] = f.tell()
@@ -406,23 +404,24 @@ class Command(BaseCommand):
                                             new_logs.append(log_entry)
                                     except json.JSONDecodeError:
                                         if not options.get(
-                                                'level'):  # Показываем неструктурированные логи только если нет фильтра по уровню
-                                            new_logs.append({
-                                                'timestamp': datetime.now().isoformat(),
-                                                'level': 'INFO',
-                                                'message': line,
-                                                'raw': True
-                                            })
+                                            "level"
+                                        ):  # Показываем неструктурированные логи только если нет фильтра по уровню
+                                            new_logs.append(
+                                                {
+                                                    "timestamp": datetime.now().isoformat(),
+                                                    "level": "INFO",
+                                                    "message": line,
+                                                    "raw": True,
+                                                }
+                                            )
                     except:
                         pass
 
                 if new_logs:
-                    new_logs.sort(key=lambda x: x.get('timestamp', ''))
+                    new_logs.sort(key=lambda x: x.get("timestamp", ""))
                     self.display_logs(new_logs)
 
                 time.sleep(1)  # Проверяем каждую секунду
 
         except KeyboardInterrupt:
-            self.stdout.write(
-                self.style.SUCCESS('\nСлежение за логами остановлено')
-            )
+            self.stdout.write(self.style.SUCCESS("\nСлежение за логами остановлено"))

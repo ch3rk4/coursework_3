@@ -3,11 +3,11 @@
 """
 
 from functools import wraps
-from django.http import HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404
+
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render
 
 
 def manager_required(view_func):
@@ -24,11 +24,17 @@ def manager_required(view_func):
     @login_required
     def wrapper(request, *args, **kwargs):
         # Проверяем, является ли пользователь менеджером или администратором
-        if not (request.user.is_superuser or getattr(request.user, 'is_manager', False)):
+        if not (
+            request.user.is_superuser or getattr(request.user, "is_manager", False)
+        ):
             return HttpResponseForbidden(
-                render(request, 'errors/403.html', {
-                    'message': 'Для доступа к этой странице требуются права менеджера.'
-                })
+                render(
+                    request,
+                    "errors/403.html",
+                    {
+                        "message": "Для доступа к этой странице требуются права менеджера."
+                    },
+                )
             )
 
         return view_func(request, *args, **kwargs)
@@ -36,7 +42,7 @@ def manager_required(view_func):
     return wrapper
 
 
-def owner_or_manager_required(model_class, pk_param='pk'):
+def owner_or_manager_required(model_class, pk_param="pk"):
     """
     Декоратор, разрешающий доступ владельцу объекта или менеджеру.
 
@@ -64,14 +70,16 @@ def owner_or_manager_required(model_class, pk_param='pk'):
 
             # Проверяем права доступа
             if not (
-                    request.user.is_superuser or
-                    getattr(request.user, 'is_manager', False) or
-                    (hasattr(obj, 'owner') and obj.owner == request.user)
+                request.user.is_superuser
+                or getattr(request.user, "is_manager", False)
+                or (hasattr(obj, "owner") and obj.owner == request.user)
             ):
                 return HttpResponseForbidden(
-                    render(request, 'errors/403.html', {
-                        'message': 'У вас нет прав для доступа к этому объекту.'
-                    })
+                    render(
+                        request,
+                        "errors/403.html",
+                        {"message": "У вас нет прав для доступа к этому объекту."},
+                    )
                 )
 
             return view_func(request, *args, **kwargs)
@@ -81,7 +89,7 @@ def owner_or_manager_required(model_class, pk_param='pk'):
     return decorator
 
 
-def owner_required(model_class, pk_param='pk'):
+def owner_required(model_class, pk_param="pk"):
     """
     Декоратор, разрешающий доступ только владельцу объекта или администратору.
 
@@ -109,13 +117,17 @@ def owner_required(model_class, pk_param='pk'):
 
             # Проверяем права доступа (только владелец или администратор)
             if not (
-                    request.user.is_superuser or
-                    (hasattr(obj, 'owner') and obj.owner == request.user)
+                request.user.is_superuser
+                or (hasattr(obj, "owner") and obj.owner == request.user)
             ):
                 return HttpResponseForbidden(
-                    render(request, 'errors/403.html', {
-                        'message': 'Только владелец объекта может выполнить это действие.'
-                    })
+                    render(
+                        request,
+                        "errors/403.html",
+                        {
+                            "message": "Только владелец объекта может выполнить это действие."
+                        },
+                    )
                 )
 
             return view_func(request, *args, **kwargs)
@@ -141,11 +153,17 @@ class ManagerRequiredMixin:
             return self.handle_no_permission()
 
         # Проверяем права менеджера
-        if not (request.user.is_superuser or getattr(request.user, 'is_manager', False)):
+        if not (
+            request.user.is_superuser or getattr(request.user, "is_manager", False)
+        ):
             return HttpResponseForbidden(
-                render(request, 'errors/403.html', {
-                    'message': 'Для доступа к этой странице требуются права менеджера.'
-                })
+                render(
+                    request,
+                    "errors/403.html",
+                    {
+                        "message": "Для доступа к этой странице требуются права менеджера."
+                    },
+                )
             )
 
         return super().dispatch(request, *args, **kwargs)
@@ -166,12 +184,13 @@ class OwnerOrManagerRequiredMixin:
             return queryset.none()
 
         # Администраторы и менеджеры видят всё
-        if (self.request.user.is_superuser or
-                getattr(self.request.user, 'is_manager', False)):
+        if self.request.user.is_superuser or getattr(
+            self.request.user, "is_manager", False
+        ):
             return queryset
 
         # Обычные пользователи видят только свои объекты
-        if hasattr(queryset.model, 'owner'):
+        if hasattr(queryset.model, "owner"):
             return queryset.filter(owner=self.request.user)
 
         return queryset
@@ -191,12 +210,10 @@ class OwnerRequiredMixin:
 
         # Проверяем права доступа
         if not (
-                self.request.user.is_superuser or
-                (hasattr(obj, 'owner') and obj.owner == self.request.user)
+            self.request.user.is_superuser
+            or (hasattr(obj, "owner") and obj.owner == self.request.user)
         ):
-            raise PermissionDenied(
-                "У вас нет прав для доступа к этому объекту."
-            )
+            raise PermissionDenied("У вас нет прав для доступа к этому объекту.")
 
         return obj
 
@@ -220,7 +237,7 @@ def user_can_edit_object(user, obj):
         return True
 
     # Владельцы могут редактировать свои объекты
-    if hasattr(obj, 'owner') and obj.owner == user:
+    if hasattr(obj, "owner") and obj.owner == user:
         return True
 
     return False
@@ -241,11 +258,11 @@ def user_can_view_object(user, obj):
         return False
 
     # Администраторы и менеджеры могут просматривать всё
-    if (user.is_superuser or getattr(user, 'is_manager', False)):
+    if user.is_superuser or getattr(user, "is_manager", False):
         return True
 
     # Владельцы могут просматривать свои объекты
-    if hasattr(obj, 'owner') and obj.owner == user:
+    if hasattr(obj, "owner") and obj.owner == user:
         return True
 
     return False

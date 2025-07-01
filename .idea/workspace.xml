@@ -1,26 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="" />
+    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="fixes">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/create_test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/create_test_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/send__mailings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/send__mailings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/start_scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/start_scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/management/commands/view_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/management/commands/view_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/manager_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/manager_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/middleware.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mailings/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/mailings/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="D1" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ch3rk4&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ch3rk4/coursework_3.git&quot;,
+    &quot;accountId&quot;: &quot;6f96d88e-1535-4788-810a-49b80da077ca&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2zEQcQWsOptFfJAuwwRxB0kS7Fi" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;D2&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -37,6 +94,315 @@
       <option name="presentableId" value="Default" />
       <updated>1751293832715</updated>
     </task>
+    <task id="LOCAL-00001" summary="base">
+      <option name="closed" value="true" />
+      <created>1751293918937</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751293918938</updated>
+    </task>
+    <task id="LOCAL-00002" summary="install requirements">
+      <option name="closed" value="true" />
+      <created>1751294379840</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294379840</updated>
+    </task>
+    <task id="LOCAL-00003" summary="create django-project">
+      <option name="closed" value="true" />
+      <created>1751294594969</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294594969</updated>
+    </task>
+    <task id="LOCAL-00004" summary="create gitignore">
+      <option name="closed" value="true" />
+      <created>1751294688388</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294688388</updated>
+    </task>
+    <task id="LOCAL-00005" summary="create settings from config">
+      <option name="closed" value="true" />
+      <created>1751294780330</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294780330</updated>
+    </task>
+    <task id="LOCAL-00006" summary="create models from users">
+      <option name="closed" value="true" />
+      <created>1751294886328</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294886328</updated>
+    </task>
+    <task id="LOCAL-00007" summary="create models from mailings">
+      <option name="closed" value="true" />
+      <created>1751294954295</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1751294954295</updated>
+    </task>
+    <task id="LOCAL-00008" summary="refresh models from users">
+      <option name="closed" value="true" />
+      <created>1751295257565</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295257565</updated>
+    </task>
+    <task id="LOCAL-00009" summary="create admin from users">
+      <option name="closed" value="true" />
+      <created>1751295383856</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295383856</updated>
+    </task>
+    <task id="LOCAL-00010" summary="create admin from mailings">
+      <option name="closed" value="true" />
+      <created>1751295427428</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295427428</updated>
+    </task>
+    <task id="LOCAL-00011" summary="create urls">
+      <option name="closed" value="true" />
+      <created>1751295574467</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295574467</updated>
+    </task>
+    <task id="LOCAL-00012" summary="create urls 2">
+      <option name="closed" value="true" />
+      <created>1751295583974</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295583974</updated>
+    </task>
+    <task id="LOCAL-00013" summary="create views">
+      <option name="closed" value="true" />
+      <created>1751295658014</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295658014</updated>
+    </task>
+    <task id="LOCAL-00014" summary="create forms">
+      <option name="closed" value="true" />
+      <created>1751295703516</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295703516</updated>
+    </task>
+    <task id="LOCAL-00015" summary="create views from mailings">
+      <option name="closed" value="true" />
+      <created>1751295780101</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295780101</updated>
+    </task>
+    <task id="LOCAL-00016" summary="create forms from mailings">
+      <option name="closed" value="true" />
+      <created>1751295821784</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1751295821784</updated>
+    </task>
+    <task id="LOCAL-00017" summary="create masks">
+      <option name="closed" value="true" />
+      <created>1751296515263</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1751296515263</updated>
+    </task>
+    <task id="LOCAL-00018" summary="create apps">
+      <option name="closed" value="true" />
+      <created>1751296581964</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1751296581964</updated>
+    </task>
+    <task id="LOCAL-00019" summary="create mailing form">
+      <option name="closed" value="true" />
+      <created>1751296645059</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1751296645059</updated>
+    </task>
+    <task id="LOCAL-00020" summary="create mailing confirm delete">
+      <option name="closed" value="true" />
+      <created>1751296734978</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1751296734978</updated>
+    </task>
+    <task id="LOCAL-00021" summary="create commands">
+      <option name="closed" value="true" />
+      <created>1751297061530</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1751297061530</updated>
+    </task>
+    <task id="LOCAL-00022" summary="middleware">
+      <option name="closed" value="true" />
+      <created>1751297340537</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1751297340537</updated>
+    </task>
+    <task id="LOCAL-00023" summary="cache">
+      <option name="closed" value="true" />
+      <created>1751297676902</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1751297676902</updated>
+    </task>
+    <task id="LOCAL-00024" summary="command for send mailings">
+      <option name="closed" value="true" />
+      <created>1751297889826</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1751297889826</updated>
+    </task>
+    <task id="LOCAL-00025" summary="command for logs">
+      <option name="closed" value="true" />
+      <created>1751297953929</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1751297953929</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1751369609757</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369609757</updated>
+    </task>
+    <task id="LOCAL-00027" summary="create message_form">
+      <option name="closed" value="true" />
+      <created>1751369729839</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369729839</updated>
+    </task>
+    <task id="LOCAL-00028" summary="create client_form">
+      <option name="closed" value="true" />
+      <created>1751369766264</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369766264</updated>
+    </task>
+    <task id="LOCAL-00029" summary="create attempt_list">
+      <option name="closed" value="true" />
+      <created>1751369806783</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369806783</updated>
+    </task>
+    <task id="LOCAL-00030" summary="create manager_views">
+      <option name="closed" value="true" />
+      <created>1751369919595</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369919595</updated>
+    </task>
+    <task id="LOCAL-00031" summary="create dashboard">
+      <option name="closed" value="true" />
+      <created>1751369978673</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1751369978673</updated>
+    </task>
+    <task id="LOCAL-00032" summary="refresh urls from mailings">
+      <option name="closed" value="true" />
+      <created>1751370025303</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1751370025303</updated>
+    </task>
+    <task id="LOCAL-00033" summary="create start_scheduler">
+      <option name="closed" value="true" />
+      <created>1751370276334</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1751370276334</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1751382781905</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1751382781905</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1751383950689</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1751383950690</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="create admin from users" />
+    <MESSAGE value="create admin from mailings" />
+    <MESSAGE value="create urls" />
+    <MESSAGE value="create urls 2" />
+    <MESSAGE value="create views" />
+    <MESSAGE value="create forms" />
+    <MESSAGE value="create views from mailings" />
+    <MESSAGE value="create forms from mailings" />
+    <MESSAGE value="create masks" />
+    <MESSAGE value="create apps" />
+    <MESSAGE value="create mailing form" />
+    <MESSAGE value="create mailing confirm delete" />
+    <MESSAGE value="create commands" />
+    <MESSAGE value="middleware" />
+    <MESSAGE value="cache" />
+    <MESSAGE value="command for send mailings" />
+    <MESSAGE value="command for logs" />
+    <MESSAGE value="create message_form" />
+    <MESSAGE value="create client_form" />
+    <MESSAGE value="create attempt_list" />
+    <MESSAGE value="create manager_views" />
+    <MESSAGE value="create dashboard" />
+    <MESSAGE value="refresh urls from mailings" />
+    <MESSAGE value="create start_scheduler" />
+    <MESSAGE value="fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
   </component>
 </project>

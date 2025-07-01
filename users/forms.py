@@ -5,6 +5,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+
 from .models import User
 
 
@@ -20,34 +21,31 @@ class UserRegistrationForm(UserCreationForm):
     # Дополнительные поля, которых нет в стандартной форме
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'example@email.com'
-        }),
-        help_text='Обязательное поле. Будет использоваться для входа в систему.'
+        widget=forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "example@email.com"}
+        ),
+        help_text="Обязательное поле. Будет использоваться для входа в систему.",
     )
 
     first_name = forms.CharField(
         max_length=30,
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Ваше имя'
-        })
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Ваше имя"}
+        ),
     )
 
     last_name = forms.CharField(
         max_length=30,
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Ваша фамилия'
-        })
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Ваша фамилия"}
+        ),
     )
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ("email", "first_name", "last_name", "password1", "password2")
 
     def __init__(self, *args, **kwargs):
         """
@@ -61,16 +59,16 @@ class UserRegistrationForm(UserCreationForm):
 
         # Добавляем CSS-классы для всех полей
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
         # Настраиваем placeholder'ы для полей паролей
-        self.fields['password1'].widget.attrs['placeholder'] = 'Введите пароль'
-        self.fields['password2'].widget.attrs['placeholder'] = 'Повторите пароль'
+        self.fields["password1"].widget.attrs["placeholder"] = "Введите пароль"
+        self.fields["password2"].widget.attrs["placeholder"] = "Повторите пароль"
 
         # Настраиваем help_text для более понятных сообщений
-        self.fields['password1'].help_text = (
-            'Пароль должен содержать минимум 8 символов и не может быть '
-            'слишком простым или похожим на ваши личные данные.'
+        self.fields["password1"].help_text = (
+            "Пароль должен содержать минимум 8 символов и не может быть "
+            "слишком простым или похожим на ваши личные данные."
         )
 
     def clean_email(self):
@@ -80,14 +78,12 @@ class UserRegistrationForm(UserCreationForm):
         Этот метод автоматически вызывается для поля email
         и позволяет добавить кастомные проверки.
         """
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get("email")
 
         if email:
             # Проверяем, не существует ли уже пользователь с таким email
             if User.objects.filter(email=email).exists():
-                raise ValidationError(
-                    'Пользователь с таким email уже существует.'
-                )
+                raise ValidationError("Пользователь с таким email уже существует.")
 
         return email
 
@@ -99,8 +95,8 @@ class UserRegistrationForm(UserCreationForm):
         поэтому мы должны явно его обработать.
         """
         user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.username = self.cleaned_data['email']  # Используем email как username
+        user.email = self.cleaned_data["email"]
+        user.username = self.cleaned_data["email"]  # Используем email как username
 
         if commit:
             user.save()
@@ -118,50 +114,43 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'avatar', 'phone', 'country']
+        fields = ["first_name", "last_name", "email", "avatar", "phone", "country"]
 
         # Настраиваем виджеты (внешний вид полей)
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ваше имя'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ваша фамилия'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'example@email.com'
-            }),
-            'phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '+7 (999) 123-45-67'
-            }),
-            'country': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Россия'
-            }),
-            'avatar': forms.FileInput(attrs={
-                'class': 'form-control'
-            }),
+            "first_name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Ваше имя"}
+            ),
+            "last_name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Ваша фамилия"}
+            ),
+            "email": forms.EmailInput(
+                attrs={"class": "form-control", "placeholder": "example@email.com"}
+            ),
+            "phone": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "+7 (999) 123-45-67"}
+            ),
+            "country": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Россия"}
+            ),
+            "avatar": forms.FileInput(attrs={"class": "form-control"}),
         }
 
         # Настраиваем подписи полей
         labels = {
-            'first_name': 'Имя',
-            'last_name': 'Фамилия',
-            'email': 'Email адрес',
-            'avatar': 'Фотография профиля',
-            'phone': 'Номер телефона',
-            'country': 'Страна',
+            "first_name": "Имя",
+            "last_name": "Фамилия",
+            "email": "Email адрес",
+            "avatar": "Фотография профиля",
+            "phone": "Номер телефона",
+            "country": "Страна",
         }
 
         # Добавляем подсказки
         help_texts = {
-            'email': 'Используется для входа в систему',
-            'avatar': 'Загрузите изображение для вашего профиля',
-            'phone': 'Укажите номер телефона для связи',
+            "email": "Используется для входа в систему",
+            "avatar": "Загрузите изображение для вашего профиля",
+            "phone": "Укажите номер телефона для связи",
         }
 
     def clean_email(self):
@@ -171,7 +160,7 @@ class UserProfileForm(forms.ModelForm):
         Важно исключить текущего пользователя из проверки,
         иначе он не сможет сохранить профиль без изменения email.
         """
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get("email")
 
         if email:
             # Получаем queryset пользователей с таким email, исключая текущего
@@ -180,8 +169,6 @@ class UserProfileForm(forms.ModelForm):
                 existing_users = existing_users.exclude(pk=self.instance.pk)
 
             if existing_users.exists():
-                raise ValidationError(
-                    'Пользователь с таким email уже существует.'
-                )
+                raise ValidationError("Пользователь с таким email уже существует.")
 
         return email

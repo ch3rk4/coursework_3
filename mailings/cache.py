@@ -2,12 +2,17 @@
 Утилиты для работы с кешем.
 """
 
-from django.core.cache import cache
-from django.conf import settings
-from django.db.models import Count, Q
-from datetime import timedelta
-from django.utils import timezone
 import hashlib
+from datetime import timedelta
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+from django.utils import timezone
+
+from .models import Client, Mailing, MailingAttempt, Message
 
 
 def get_cache_key(prefix, *args, **kwargs):
@@ -74,25 +79,22 @@ def cache_user_stats(user_id, timeout=600):  # 10 минут
     Returns:
         dict: Статистика пользователя
     """
-    cache_key = get_cache_key('user_stats', user_id)
+    cache_key = get_cache_key("user_stats", user_id)
 
     def calculate_stats():
-        from .models import Mailing, Message, Client, MailingAttempt
 
         return {
-            'total_mailings': Mailing.objects.filter(owner_id=user_id).count(),
-            'total_messages': Message.objects.filter(owner_id=user_id).count(),
-            'total_clients': Client.objects.filter(owner_id=user_id).count(),
-            'total_attempts': MailingAttempt.objects.filter(
+            "total_mailings": Mailing.objects.filter(owner_id=user_id).count(),
+            "total_messages": Message.objects.filter(owner_id=user_id).count(),
+            "total_clients": Client.objects.filter(owner_id=user_id).count(),
+            "total_attempts": MailingAttempt.objects.filter(
                 mailing__owner_id=user_id
             ).count(),
-            'successful_attempts': MailingAttempt.objects.filter(
-                mailing__owner_id=user_id,
-                status=MailingAttempt.STATUS_SUCCESS
+            "successful_attempts": MailingAttempt.objects.filter(
+                mailing__owner_id=user_id, status=MailingAttempt.STATUS_SUCCESS
             ).count(),
-            'active_mailings': Mailing.objects.filter(
-                owner_id=user_id,
-                status=Mailing.STATUS_STARTED
+            "active_mailings": Mailing.objects.filter(
+                owner_id=user_id, status=Mailing.STATUS_STARTED
             ).count(),
         }
 
@@ -109,33 +111,31 @@ def cache_global_stats(timeout=900):  # 15 минут
     Returns:
         dict: Глобальная статистика
     """
-    cache_key = get_cache_key('global_stats')
+    cache_key = get_cache_key("global_stats")
 
     def calculate_stats():
-        from .models import Mailing, Message, Client, MailingAttempt
-        from django.contrib.auth import get_user_model
 
         User = get_user_model()
 
         return {
-            'total_users': User.objects.count(),
-            'total_mailings': Mailing.objects.count(),
-            'total_messages': Message.objects.count(),
-            'total_clients': Client.objects.count(),
-            'total_attempts': MailingAttempt.objects.count(),
-            'successful_attempts': MailingAttempt.objects.filter(
+            "total_users": User.objects.count(),
+            "total_mailings": Mailing.objects.count(),
+            "total_messages": Message.objects.count(),
+            "total_clients": Client.objects.count(),
+            "total_attempts": MailingAttempt.objects.count(),
+            "successful_attempts": MailingAttempt.objects.filter(
                 status=MailingAttempt.STATUS_SUCCESS
             ).count(),
-            'failed_attempts': MailingAttempt.objects.filter(
+            "failed_attempts": MailingAttempt.objects.filter(
                 status=MailingAttempt.STATUS_FAILED
             ).count(),
-            'active_mailings': Mailing.objects.filter(
+            "active_mailings": Mailing.objects.filter(
                 status=Mailing.STATUS_STARTED
             ).count(),
-            'created_mailings': Mailing.objects.filter(
+            "created_mailings": Mailing.objects.filter(
                 status=Mailing.STATUS_CREATED
             ).count(),
-            'completed_mailings': Mailing.objects.filter(
+            "completed_mailings": Mailing.objects.filter(
                 status=Mailing.STATUS_COMPLETED
             ).count(),
         }
@@ -154,24 +154,23 @@ def cache_mailing_stats(mailing_id, timeout=300):  # 5 минут
     Returns:
         dict: Статистика рассылки
     """
-    cache_key = get_cache_key('mailing_stats', mailing_id)
+    cache_key = get_cache_key("mailing_stats", mailing_id)
 
     def calculate_stats():
-        from .models import MailingAttempt
 
         attempts = MailingAttempt.objects.filter(mailing_id=mailing_id)
 
         return {
-            'total_attempts': attempts.count(),
-            'successful_attempts': attempts.filter(
+            "total_attempts": attempts.count(),
+            "successful_attempts": attempts.filter(
                 status=MailingAttempt.STATUS_SUCCESS
             ).count(),
-            'failed_attempts': attempts.filter(
+            "failed_attempts": attempts.filter(
                 status=MailingAttempt.STATUS_FAILED
             ).count(),
-            'latest_attempts': list(
-                attempts.order_by('-datetime')[:10].values(
-                    'client_email', 'status', 'datetime', 'server_response'
+            "latest_attempts": list(
+                attempts.order_by("-datetime")[:10].values(
+                    "client_email", "status", "datetime", "server_response"
                 )
             ),
         }
@@ -190,11 +189,11 @@ def invalidate_user_cache(user_id):
         return
 
     # Инвалидируем статистику пользователя
-    cache_key = get_cache_key('user_stats', user_id)
+    cache_key = get_cache_key("user_stats", user_id)
     cache.delete(cache_key)
 
     # Инвалидируем глобальную статистику
-    global_cache_key = get_cache_key('global_stats')
+    global_cache_key = get_cache_key("global_stats")
     cache.delete(global_cache_key)
 
 
@@ -208,7 +207,7 @@ def invalidate_mailing_cache(mailing_id):
     if not settings.CACHE_ENABLED:
         return
 
-    cache_key = get_cache_key('mailing_stats', mailing_id)
+    cache_key = get_cache_key("mailing_stats", mailing_id)
     cache.delete(cache_key)
 
 
@@ -228,18 +227,22 @@ class CacheMixin:
     """
 
     cache_timeout = 300  # 5 минут по умолчанию
-    cache_prefix = 'view'
+    cache_prefix = "view"
     cache_per_user = True
 
     def get_cache_key(self):
         """Генерирует ключ кеша для представления."""
         args = [self.cache_prefix, self.__class__.__name__]
 
-        if self.cache_per_user and hasattr(self.request, 'user') and self.request.user.is_authenticated:
-            args.append(f'user_{self.request.user.id}')
+        if (
+            self.cache_per_user
+            and hasattr(self.request, "user")
+            and self.request.user.is_authenticated
+        ):
+            args.append(f"user_{self.request.user.id}")
 
         # Добавляем параметры из URL
-        if hasattr(self, 'kwargs') and self.kwargs:
+        if hasattr(self, "kwargs") and self.kwargs:
             args.extend(f"{k}_{v}" for k, v in self.kwargs.items())
 
         # Добавляем GET-параметры
@@ -280,7 +283,7 @@ def cache_template_fragment(fragment_name, *args, timeout=300):
             if not settings.CACHE_ENABLED:
                 return func(*func_args, **func_kwargs)
 
-            cache_key = get_cache_key('template_fragment', fragment_name, *args)
+            cache_key = get_cache_key("template_fragment", fragment_name, *args)
 
             def get_content():
                 return func(*func_args, **func_kwargs)
@@ -301,12 +304,12 @@ def get_cache_info():
         dict: Информация о кеше
     """
     if not settings.CACHE_ENABLED:
-        return {'enabled': False}
+        return {"enabled": False}
 
     try:
         # Тестируем кеш
-        test_key = 'cache_test'
-        test_value = 'test_value'
+        test_key = "cache_test"
+        test_value = "test_value"
         cache.set(test_key, test_value, 60)
         retrieved_value = cache.get(test_key)
         cache.delete(test_key)
@@ -314,15 +317,15 @@ def get_cache_info():
         cache_working = retrieved_value == test_value
 
         return {
-            'enabled': True,
-            'working': cache_working,
-            'backend': settings.CACHES['default']['BACKEND'],
+            "enabled": True,
+            "working": cache_working,
+            "backend": settings.CACHES["default"]["BACKEND"],
         }
     except Exception as e:
         return {
-            'enabled': True,
-            'working': False,
-            'error': str(e),
+            "enabled": True,
+            "working": False,
+            "error": str(e),
         }
 
 
@@ -340,20 +343,16 @@ def warm_up_cache():
     cache_global_stats()
 
     # Прогреваем статистику активных пользователей
-    from django.contrib.auth import get_user_model
     User = get_user_model()
 
     active_users = User.objects.filter(
         last_login__gte=timezone.now() - timedelta(days=30)
-    )[:20]  # Топ-20 активных пользователей
+    )[
+        :20
+    ]  # Топ-20 активных пользователей
 
     for user in active_users:
         cache_user_stats(user.id)
-
-
-# Сигналы для автоматической инвалидации кеша
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 
 
 @receiver([post_save, post_delete])
@@ -366,19 +365,19 @@ def invalidate_cache_on_model_change(sender, instance, **kwargs):
         instance: Экземпляр модели
         **kwargs: Дополнительные параметры сигнала
     """
-    from .models import Mailing, Message, Client, MailingAttempt
+    from .models import Client, Mailing, MailingAttempt, Message
 
     if not settings.CACHE_ENABLED:
         return
 
     # Определяем, какой кеш нужно инвалидировать
     if sender in [Mailing, Message, Client]:
-        if hasattr(instance, 'owner'):
+        if hasattr(instance, "owner"):
             invalidate_user_cache(instance.owner.id)
-        invalidate_cache_on_model_change.__globals__['cache'].delete('global_stats')
+        invalidate_cache_on_model_change.__globals__["cache"].delete("global_stats")
 
     elif sender == MailingAttempt:
-        if hasattr(instance, 'mailing') and hasattr(instance.mailing, 'owner'):
+        if hasattr(instance, "mailing") and hasattr(instance.mailing, "owner"):
             invalidate_user_cache(instance.mailing.owner.id)
             invalidate_mailing_cache(instance.mailing.id)
-        invalidate_cache_on_model_change.__globals__['cache'].delete('global_stats')
+        invalidate_cache_on_model_change.__globals__["cache"].delete("global_stats")

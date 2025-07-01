@@ -2,18 +2,18 @@
 Представления для приложения пользователей
 """
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import login
-from django.views.generic import CreateView, DetailView, UpdateView, TemplateView
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.views.generic import (CreateView, DetailView, TemplateView,
+                                  UpdateView)
 
+from .forms import UserProfileForm, UserRegistrationForm
 from .models import User
-from .forms import UserRegistrationForm, UserProfileForm
 
 
 class RegisterView(CreateView):
@@ -27,8 +27,8 @@ class RegisterView(CreateView):
 
     model = User
     form_class = UserRegistrationForm
-    template_name = 'users/register.html'
-    success_url = reverse_lazy('users:login')
+    template_name = "users/register.html"
+    success_url = reverse_lazy("users:login")
 
     def form_valid(self, form):
         """
@@ -48,10 +48,7 @@ class RegisterView(CreateView):
         self.send_welcome_email()
 
         # Показываем сообщение об успехе
-        messages.success(
-            self.request,
-            'Добро пожаловать! Ваш аккаунт успешно создан.'
-        )
+        messages.success(self.request, "Добро пожаловать! Ваш аккаунт успешно создан.")
 
         return response
 
@@ -59,13 +56,13 @@ class RegisterView(CreateView):
         """Отправка приветственного письма новому пользователю."""
         try:
             send_mail(
-                subject='Добро пожаловать в сервис рассылок!',
-                message=f'Здравствуйте, {self.object.first_name or self.object.email}!\n\n'
-                        f'Спасибо за регистрацию в нашем сервисе рассылок. '
-                        f'Теперь вы можете создавать и управлять своими рассылками.',
+                subject="Добро пожаловать в сервис рассылок!",
+                message=f"Здравствуйте, {self.object.first_name or self.object.email}!\n\n"
+                f"Спасибо за регистрацию в нашем сервисе рассылок. "
+                f"Теперь вы можете создавать и управлять своими рассылками.",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[self.object.email],
-                fail_silently=True  # Не прерываем процесс при ошибке отправки
+                fail_silently=True,  # Не прерываем процесс при ошибке отправки
             )
         except Exception as e:
             # Логируем ошибку, но не прерываем регистрацию
@@ -79,28 +76,28 @@ class CustomLoginView(LoginView):
     Наследуемся от встроенного LoginView и настраиваем под наши нужды.
     """
 
-    template_name = 'users/login.html'
+    template_name = "users/login.html"
     redirect_authenticated_user = True  # Перенаправляем уже авторизованных
 
     def get_success_url(self):
         """Определяем, куда перенаправить после успешного входа."""
-        return reverse_lazy('home')
+        return reverse_lazy("home")
 
     def form_valid(self, form):
         """Добавляем сообщение об успешном входе."""
-        messages.success(self.request, f'Добро пожаловать, {form.get_user()}!')
+        messages.success(self.request, f"Добро пожаловать, {form.get_user()}!")
         return super().form_valid(form)
 
 
 class CustomLogoutView(LogoutView):
     """Кастомное представление для выхода из системы."""
 
-    next_page = reverse_lazy('home')
+    next_page = reverse_lazy("home")
 
     def dispatch(self, request, *args, **kwargs):
         """Добавляем сообщение об успешном выходе."""
         if request.user.is_authenticated:
-            messages.info(request, 'Вы успешно вышли из системы.')
+            messages.info(request, "Вы успешно вышли из системы.")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -113,8 +110,8 @@ class ProfileView(LoginRequiredMixin, DetailView):
     """
 
     model = User
-    template_name = 'users/profile.html'
-    context_object_name = 'profile_user'
+    template_name = "users/profile.html"
+    context_object_name = "profile_user"
 
     def get_object(self):
         """Возвращаем текущего авторизованного пользователя."""
@@ -126,8 +123,8 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
     model = User
     form_class = UserProfileForm
-    template_name = 'users/profile_edit.html'
-    success_url = reverse_lazy('users:profile')
+    template_name = "users/profile_edit.html"
+    success_url = reverse_lazy("users:profile")
 
     def get_object(self):
         """Возвращаем текущего авторизованного пользователя."""
@@ -135,7 +132,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Добавляем сообщение об успешном обновлении."""
-        messages.success(self.request, 'Профиль успешно обновлен!')
+        messages.success(self.request, "Профиль успешно обновлен!")
         return super().form_valid(form)
 
 
@@ -148,10 +145,10 @@ class EmailConfirmView(TemplateView):
     и активации аккаунта пользователя.
     """
 
-    template_name = 'users/email_confirm.html'
+    template_name = "users/email_confirm.html"
 
     def get_context_data(self, **kwargs):
         """Добавляем дополнительные данные в контекст шаблона."""
         context = super().get_context_data(**kwargs)
-        context['token'] = kwargs.get('token')
+        context["token"] = kwargs.get("token")
         return context

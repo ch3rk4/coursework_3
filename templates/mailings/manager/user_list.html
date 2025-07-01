@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<h2>Управление пользователями</h2>
+<table class="table">
+    <thead><tr><th>Email</th><th>Статус</th><th>Действия</th></tr></thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{% if user.is_active %}Активен{% else %}Заблокирован{% endif %}</td>
+            <td>
+                {% if not user.is_superuser %}
+                <form method="post" action="{% url 'mailings:manager_toggle_user' user.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-warning">
+                        {% if user.is_active %}Заблокировать{% else %}Разблокировать{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

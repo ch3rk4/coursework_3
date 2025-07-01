@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="create start_scheduler">
+    <list default="true" id="7e59f6c7-73bf-4fec-8be2-a71b7a374fca" name="Changes" comment="fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +15,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -336,7 +336,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751370276334</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1751382781905</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1751382781905</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -357,7 +365,6 @@
     <MESSAGE value="cache" />
     <MESSAGE value="command for send mailings" />
     <MESSAGE value="command for logs" />
-    <MESSAGE value="fixes" />
     <MESSAGE value="create message_form" />
     <MESSAGE value="create client_form" />
     <MESSAGE value="create attempt_list" />
@@ -365,6 +372,7 @@
     <MESSAGE value="create dashboard" />
     <MESSAGE value="refresh urls from mailings" />
     <MESSAGE value="create start_scheduler" />
-    <option name="LAST_COMMIT_MESSAGE" value="create start_scheduler" />
+    <MESSAGE value="fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
   </component>
 </project>
